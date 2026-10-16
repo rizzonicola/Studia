@@ -1,52 +1,52 @@
 <p align="center">
-  <img src="public/icons/icon-192.png" alt="Logo di StudIA" width="96" height="96">
+  <img src="public/icons/icon-192.png" alt="StudIA Logo" width="96" height="96">
 </p>
 
 <h1 align="center">StudIA</h1>
 
 <p align="center">
-  Appunti, quiz e mappe concettuali con l'AI.<br>
-  Trasforma PDF, foto e lezioni registrate in materiale di studio con Google Gemini.
+  AI-powered study notes, quizzes, and concept maps.<br>
+  Turn PDFs, photos, and recorded lectures into study material with Google Gemini.
 </p>
 
 <p align="center">
-  <a href="https://studia.poppi.cc"><strong>Apri l'app → studia.poppi.cc</strong></a>
+  <a href="https://studia.poppi.cc"><strong>Open the app → studia.poppi.cc</strong></a>
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/desktop.png" alt="StudIA su desktop" width="64%">
+  <img src="docs/screenshots/desktop.png" alt="StudIA on desktop" width="64%">
   &nbsp;
-  <img src="docs/screenshots/mobile.png" alt="StudIA su telefono" width="22%">
+  <img src="docs/screenshots/mobile.png" alt="StudIA on mobile" width="22%">
 </p>
 
-## Cosa fa
+## Features
 
-- **Appunti** da PDF, foto, audio e video.
-- **Quiz** con spiegazioni, per ripassare.
-- **Mappe concettuali** dei tuoi appunti.
-- **Cartelle**, importazione ed esportazione dei tuoi materiali.
-- **Temi** chiari e scuri, personalizzabili.
-- **Italiano, English, Français.**
+- **Study Notes** from PDFs, images, audio, and video.
+- **Quizzes** with explanations for effective review.
+- **Concept Maps** generated from your notes.
+- **Folders**, plus full import and export of your study materials.
+- **Customizable Themes** with light and dark palettes.
+- **Multilingual:** English, Italian, and French.
 
 ## Privacy
 
-Nessun account e nessun server: gli appunti restano nel tuo browser e usi la tua chiave API gratuita di [Google AI Studio](https://aistudio.google.com/), salvata solo sul tuo dispositivo.
+No account and no backend server: your notes remain strictly in your browser and you use your personal, free API key from [Google AI Studio](https://aistudio.google.com/), stored locally on your device.
 
-## Installazione
+## Installation
 
-StudIA è una PWA: si può installare da Chrome, Edge, Samsung Internet e Brave, oppure da Safari su iPhone/iPad dal menu *Condividi*. Anche senza connessione l'app si apre e gli appunti già salvati restano consultabili; per generarne di nuovi serve la rete.
+StudIA is an installable Progressive Web App (PWA): you can install it via Chrome, Edge, Samsung Internet, and Brave, or via Safari on iPhone/iPad using the *Share* menu. Saved notes are fully accessible offline; an internet connection is only needed when generating new AI content.
 
-## Per sviluppatori
+## Developers
 
 ```bash
 npm install
 npm run dev     # http://localhost:3000
 npm test
-npm run build   # output in dist/
+npm run build   # outputs to dist/
 ```
 
-Stack: Vite, React, TypeScript, Tailwind, IndexedDB. Note tecniche (deploy, SEO, PWA, temi, modelli): [`docs/SVILUPPO.md`](docs/SVILUPPO.md).
+Stack: Vite, React, TypeScript, Tailwind CSS, IndexedDB. Technical documentation (deployments, SEO, PWA, themes, AI models): [`docs/SVILUPPO.md`](docs/SVILUPPO.md).
 
-## Autore e licenza
+## Author & License
 
-Progetto di [Nicola Rizzo](https://github.com/rizzonicola), con licenza [PolyForm Strict 1.0.0](LICENSE): uso non commerciale consentito, nessun diritto di distribuzione o modifica. Il codice è visibile (*source-available*) ma non è open source in senso OSI.
+Created by [Nicola Rizzo](https://github.com/rizzonicola). Released under the [PolyForm Strict License 1.0.0](LICENSE): non-commercial use permitted, no distribution or modification rights granted. The codebase is visible (*source-available*), but not open source under the OSI definition.

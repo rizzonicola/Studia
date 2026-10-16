@@ -1,87 +1,87 @@
 # SEO
 
-Strategia, implementazione e verifiche per il posizionamento di StudIA su motori di ricerca. Dominio di produzione: `https://studia.poppi.cc`.
+Search engine optimization strategy, technical implementation, and verification for StudIA. Production domain: `https://studia.poppi.cc`.
 
-**Indice:** [Impostazione](#impostazione) · [Limiti della SPA](#limiti-della-spa-e-contromisure) · [Implementazione](#implementazione) · [Dopo il deploy](#dopo-il-deploy) · [Autorevolezza esterna](#autorevolezza-esterna) · [Possibili sviluppi](#possibili-sviluppi) · [Limiti noti](#limiti-noti)
+**Table of Contents:** [Strategy & Approach](#strategy--approach) · [SPA Limitations & Countermeasures](#spa-limitations--countermeasures) · [Implementation](#implementation) · [Post-Deployment Checklist](#post-deployment-checklist) · [External Authority](#external-authority) · [Future Improvements](#future-improvements) · [Known Limitations](#known-limitations)
 
-## Impostazione
+## Strategy & Approach
 
-**Separazione tra prodotto e contenuto.** L'applicazione resta una SPA: un rendering lato server richiederebbe un lavoro rilevante senza benefici per le schermate private. I contenuti destinati al posizionamento sono **pagine HTML statiche prerenderizzate al build**: testo reale, nessun JavaScript, CSS inline (~2 KB) e tema chiaro/scuro coerente con l'app.
+**Separation of product and content.** The application remains a Single Page Application (SPA): server-side rendering (SSR) would introduce substantial complexity without providing benefits to private operational screens. Public content meant for search indexation consists of **prerendered static HTML pages generated during build**: real text, zero client-side JavaScript, minimal inline CSS (~2 KB), and consistent light/dark theme styling matching the app.
 
-**Mercato.** L'italiano è la lingua di riferimento del progetto, seguito da inglese e francese. Ogni lingua ha URL proprie (`/it/`, `/en/`, `/fr/`) con hreflang reciproci e `x-default` → `/en/`, che è la lingua di ripiego dell'app.
+**Target markets.** Italian is the primary reference language for the project, followed by English and French. Each language has dedicated URLs (`/it/`, `/en/`, `/fr/`) configured with reciprocal `hreflang` tags and `x-default` pointing to `/en/`, which serves as the global fallback language.
 
-**Intenti intercettati**
+**Target search intents**
 
-| Intento | Contenuto |
+| Intent | Content Strategy |
 |---|---|
-| Passaggio obbligato | Con il modello «porta la tua chiave» ogni utente deve ottenerne una: guida «chiave API Gemini gratis» (IT, EN, FR). Ricerca informativa con intento chiaro e conversione naturale verso l'app |
-| Funzione | Appunti AI da PDF, foto e audio; quiz da appunti; mappe concettuali (IT) |
-| Brand | Landing per ciascuna lingua |
+| Mandatory step | Under the "bring your own API key" model, every user must obtain a key: guide "Free Gemini API Key" (available in IT, EN, FR). High-intent informational search with natural conversion to the app |
+| Features | AI notes from PDFs, photos, and audio; quizzes from notes; concept maps (IT) |
+| Brand | Dedicated landing page for each supported language |
 
-**Cluster.** La landing è l'hub e le guide sono i contenuti satellite, collegati da link bidirezionali nel testo, briciole di pane, footer, sezione «Altre guide» e sitemap. Non esistono pagine orfane, come verifica il controllo automatico.
+**Content clusters.** The language landing page acts as the hub, with guides serving as satellite articles connected via bidirectional contextual links, breadcrumbs, footers, a "Related Guides" section, and the XML sitemap. No orphan pages exist, as verified by automated checks.
 
-**Affidabilità (E-E-A-T).** Titolare ed email sono visibili, con disclaimer su Google e Gemini; la privacy è descritta con le stesse parole dei testi legali. I testi descrivono il comportamento reale dell'applicazione (limiti, formati, etichette dei pulsanti) e non promettono nulla sui costi di Google, rimandando ai limiti da lui indicati.
+**Credibility & E-E-A-T.** Site owner identity and contact email are visible, accompanied by clear disclaimers regarding Google and Gemini. Privacy practices are documented using the exact same wording as the official legal policies. Technical limits, supported file formats, and UI labels reflect reality accurately without making speculative claims about Google's pricing, deferring instead to official quota guidelines.
 
-## Limiti della SPA e contromisure
+## SPA Limitations & Countermeasures
 
-| Limite tipico di una SPA | Contromisura |
+| Classic SPA Issue | Implemented Countermeasure |
 |---|---|
-| L'HTML iniziale contiene solo `<div id="root">` e un avviso sulla necessità di JavaScript: nessun testo indicizzabile | Pagine statiche prerenderizzate al build (`seo/`) |
-| `OnboardingGate` copre ogni rotta, tranne `/terms` e `/privacy`, con un modale che contiene i Termini di Servizio: per un crawler la home parlerebbe di clausole legali | Schermata di benvenuto che precede i Termini, con unico `<h1>` e descrizione del prodotto |
-| Un `path="*"` che mostra la home con stato 200 genera soft-404 e URL duplicati | `NotFoundPage` con `noindex` per le rotte sconosciute |
-| La lingua dipende dal dispositivo, senza URL per lingua né hreflang: Googlebot vede solo l'inglese | URL dedicate `/it/`, `/en/`, `/fr/` con hreflang reciproci |
-| Le schermate private non hanno `noindex` e il canonical punta alla home | `noindex` da `DocumentMeta` e da `X-Robots-Tag`; canonical per rotta |
-| Assenza di dati strutturati; `lastmod` della sitemap uguale alla data del build | JSON-LD collegato da `@id`; sitemap con `lastmod` reale |
-| Dopo l'esecuzione del JavaScript il titolo si riduce a «StudIA» | Titolo descrittivo per la home impostato da `DocumentMeta` |
+| Initial HTML only contains `<div id="root">` and a `<noscript>` warning: no indexable text | Prerendered static HTML pages generated at build time (`seo/`) |
+| `OnboardingGate` covers all routes (except `/terms` and `/privacy`) with a modal for Terms of Service: search crawlers would see only legal terms on the homepage | Welcome screen preceding the Terms with a unique `<h1>` and concise product overview |
+| A fallback `path="*"` serving the homepage with HTTP 200 causes soft-404s and duplicate URLs | Dedicated `NotFoundPage` with `noindex` for unknown routes |
+| Language depends on browser headers without distinct URLs or hreflang: Googlebot indexes only English | Dedicated language URLs (`/it/`, `/en/`, `/fr/`) with reciprocal `hreflang` alternates |
+| Private app screens lack `noindex` and canonical tags mistakenly point to root | `noindex` injected via `DocumentMeta` and HTTP `X-Robots-Tag`; route-specific canonical tags |
+| Missing structured data; sitemap `lastmod` set uniformly to build timestamp | Linked Schema.org JSON-LD entities via `@id`; sitemap populated with authentic `lastmod` modification dates |
+| Post-hydration page title collapses to generic "StudIA" | Contextual, descriptive homepage title injected via `DocumentMeta` |
 
-Contribuiscono inoltre alla qualità tecnica del sito: CSP e HSTS, dominio unico in `config/site.ts`, Open Graph e Twitter Card, PWA, cache immutabile, tema senza lampo di colore e accessibilità (target da 44 px, skip link).
+Additional technical quality factors: strict CSP and HSTS headers, single source of truth in `config/site.ts`, Open Graph and Twitter Card tags, PWA support, immutable asset caching, flash-free theme rendering, and accessibility standards (44 px touch targets, skip links).
 
-## Implementazione
+## Implementation
 
-- **9 pagine statiche**: landing ×3, guida alla chiave API ×3, guide su appunti, quiz e mappe (IT). Testi in `seo/content.ts`, template in `seo/render.ts`, generatore in `seo/generate.ts` (richiamato da `vite.config.ts`).
-- **Dati strutturati** collegati da `@id`: Organization, WebSite, WebApplication (home), Article e BreadcrumbList (guide), FAQPage. Sono presenti anche nella shell dell'app (`index.html`).
-- **Sitemap** con `lastmod` reale (data di modifica del testo) e alternate hreflang; `robots.txt` generato.
-- **Benvenuto alla prima visita** (`components/OnboardingGate.tsx`): prima dei Termini compare una schermata che spiega a cosa serve StudIA (unico `<h1>` della home, quattro punti, pulsante «Inizia», link a `/it/`, `/en/` o `/fr/`). Chi ha già accettato i Termini non la rivede e può riaprirla dal link «Guide» nel footer. Googlebot non conserva localStorage, quindi su `/` vede questa schermata e non i Termini.
-- **`DocumentMeta`**: `robots` e `canonical` per rotta. Sono indicizzabili solo `/`, `/terms` e `/privacy`; la home ha un titolo descrittivo.
-- **Canonical della shell**: `index.html` non contiene un canonical nell'HTML iniziale. Lo imposta `DocumentMeta`: su `/`, `/terms` e `/privacy` punta alla pagina stessa, mentre sulle rotte private è assente. In questo modo HTML e DOM non divergono per `/terms` e `/privacy`; di conseguenza la home ha il canonical solo via JavaScript. `check:seo` fallisce se il canonical compare nella shell.
-- **Favicon quadrata**: `public/favicon.svg` ha un `viewBox` 418×418 con il logo centrato (Google richiede un'icona quadrata). `tools/generate-icons.mjs` (`npm run icons`) legge solo i `<path>` e il `<g transform>`, non il `viewBox`, quindi le icone PNG/ICO restano invariate.
-- **Ancore dei link alla guida chiave** dalla home: testo descrittivo («guida alla chiave API Gemini gratuita»). Le traduzioni EN e FR sono da sottoporre a revisione ([vedi checklist](#dopo-il-deploy)).
-- **Rotte sconosciute**: `NotFoundPage` con `noindex`, senza duplicare la home.
-- **`_headers`**: `X-Robots-Tag: noindex, nofollow` su `/note/*`, `/folder/*`, `/settings`, `/upload` e `/camera`. Si usa l'header e non `Disallow`, perché altrimenti il crawler non leggerebbe il `noindex`.
-- **Service worker**: le pagine `/it/`, `/en/` e `/fr/` non vengono intercettate; offline aprirebbero altrimenti l'app su un indirizzo sconosciuto al router.
-- **Collegamenti interni dall'app**: link «Guide» nel footer e link alla guida nel passo «chiave API» dell'onboarding, utile anche alla conversione di chi arriva da Google. Su telefono il footer è compatto (*Guide · Termini · Privacy · Info*): «Guide» resta visibile a ogni larghezza, come Termini e Privacy, mentre autore (`rel="author"`) e licenza (`rel="license"`) restano nell'HTML e sono visibili da `sm` in su (su telefono si leggono in Informazioni). Vedi il commento in `components/Footer.tsx`.
-- **`<noscript>`** con link alle tre lingue.
-- **Controllo automatico** `npm run check:seo`: titoli e description, unico H1, canonical, noindex, hreflang reciproci, JSON-LD valido, link rotti, immagini social, pagine orfane, testo minimo.
+- **9 static pages**: 3 language landings, 3 API key setup guides, and 3 feature guides for notes, quizzes, and maps (IT). Content lives in `seo/content.ts`, templates in `seo/render.ts`, and the generator in `seo/generate.ts` (triggered during `vite build`).
+- **Structured data** linked via `@id`: `Organization`, `WebSite`, `WebApplication` (homepage), `Article`, `BreadcrumbList` (guides), and `FAQPage`. Present in both prerendered pages and the SPA shell (`index.html`).
+- **XML Sitemap** with real `lastmod` dates (tracking actual text update timestamps) and reciprocal `hreflang` tags; auto-generated `robots.txt`.
+- **First-time welcome screen** (`components/OnboardingGate.tsx`): before presenting the Terms of Service, a screen explains StudIA's core value proposition (the homepage's unique `<h1>`, four bullet points, a "Get Started" button, and links to `/it/`, `/en/`, or `/fr/`). Returning users who accepted the Terms bypass this screen and can access guides via the footer link. Googlebot does not persist `localStorage`, ensuring it indexes this descriptive welcome screen rather than legal clauses.
+- **`DocumentMeta`**: dynamically sets `robots` and `canonical` per route. Only `/`, `/terms`, and `/privacy` are indexable.
+- **SPA shell canonical handling**: `index.html` omits a static canonical link. `DocumentMeta` injects it dynamically: pointing to itself on `/`, `/terms`, and `/privacy`, and omitting it on private routes. This prevents discrepancies between initial HTML and DOM on legal pages. Automated check `npm run check:seo` fails if a hardcoded canonical tag is placed into the shell.
+- **Square favicon**: `public/favicon.svg` uses a 418×418 `viewBox` with a centered icon (Google requires a square favicon). The icon generator `tools/generate-icons.mjs` (`npm run icons`) parses only `<path>` and `<g transform>` tags, keeping PNG and ICO files consistent.
+- **Descriptive anchor text**: links to the API key guide use clear anchor copy.
+- **Unknown routes**: served with `NotFoundPage` including `noindex`, preventing homepage duplicate indexing.
+- **`_headers`**: sets `X-Robots-Tag: noindex, nofollow` on `/note/*`, `/folder/*`, `/settings`, `/upload`, and `/camera`. HTTP headers are used instead of `robots.txt` Disallow directives so search bots can process the `noindex` directive properly.
+- **Service worker routing**: static pages under `/it/`, `/en/`, and `/fr/` bypass the service worker cache-first shell routing, ensuring fresh content from network.
+- **Internal application links**: "Guides" link in the footer and setup links within the onboarding wizard assist user navigation and search discoverability. On mobile screens, the footer remains compact (*Guides · Terms · Privacy · Info*): "Guides" remains always visible across all viewports, while author (`rel="author"`) and license (`rel="license"`) attributes remain present in the DOM and visible from `sm` breakpoint upwards.
+- **`<noscript>` fallback** providing direct links to all three language landing pages.
+- **Automated verification** via `npm run check:seo`: verifies titles, descriptions, single H1 presence, canonicals, noindex rules, reciprocal hreflangs, valid JSON-LD, broken internal links, social preview images, orphan pages, and minimum word count.
 
-## Dopo il deploy
+## Post-Deployment Checklist
 
-1. Eseguire `npm run typecheck && npm run build && npm run check:seo`. Il build fallisce se testi e rotte non coincidono.
-2. Aprire `/it/` e `/it/guide/chiave-api-gemini-gratis/`: devono mostrare la pagina statica (il testo è visibile nel sorgente). Se mostrassero l'app, eliminare `public/_redirects` (vedi il commento nel file).
-3. In Search Console, «Controllo URL» su `https://studia.poppi.cc/` → «Prova URL live» → «Visualizza pagina sottoposta a scansione»: deve comparire il benvenuto, non i Termini.
-4. **Google Search Console**: proprietà di dominio `poppi.cc` (record TXT su Cloudflare), invio di `https://studia.poppi.cc/sitemap.xml` e «Richiedi indicizzazione» per `/it/`, `/en/`, `/fr/` e la guida alla chiave API.
-5. **Bing Webmaster Tools**, con importazione da Search Console.
-6. Redirect da `*.pages.dev` al dominio personalizzato per evitare duplicati ([`SVILUPPO.md`](SVILUPPO.md#deploy-su-cloudflare-pages), punto 5).
-7. Cloudflare Web Analytics (senza cookie) per la misurazione.
-8. Revisione dei testi EN e FR e dei testi legali ([`SVILUPPO.md`](SVILUPPO.md#testi-legali)).
+1. Run `npm run typecheck && npm run build && npm run check:seo`. The build fails automatically if routes and content mappings diverge.
+2. Open `/it/` and `/it/guide/chiave-api-gemini-gratis/`: confirm that static HTML is returned (inspect page source). If the SPA shell is loaded instead, inspect or remove `public/_redirects` (refer to comments in the file).
+3. In Google Search Console, inspect `https://studia.poppi.cc/` → "Test Live URL" → "View Tested Page": verify that the welcome screen is parsed, not the legal terms modal.
+4. **Google Search Console**: configure domain property `poppi.cc` (DNS TXT record on Cloudflare), submit `https://studia.poppi.cc/sitemap.xml`, and request indexing for `/it/`, `/en/`, `/fr/`, and the API key guides.
+5. **Bing Webmaster Tools**: import configuration directly from Google Search Console.
+6. Configure redirects from `*.pages.dev` to the primary custom domain to prevent canonical cannibalization ([`SVILUPPO.md`](SVILUPPO.md#deploy-to-cloudflare-pages), step 5).
+7. Enable cookie-free Cloudflare Web Analytics for privacy-preserving telemetry.
+8. Proofread EN and FR content and legal notices ([`SVILUPPO.md`](SVILUPPO.md#legal-documents)).
 
-## Autorevolezza esterna
+## External Authority
 
-- Link dal dominio radice `poppi.cc` e dai profili del titolare: è la leva più rapida per un sottodominio nuovo.
-- Presentazioni mirate (Product Hunt, Show HN, community di studenti, elenchi di strumenti AI), senza acquisto di link.
-- Un video «Come ottenere la chiave API Gemini» con link in descrizione.
-- Il repository pubblico rimanda al sito, che va mantenuto aggiornato.
+- Contextual links from the apex domain `poppi.cc` and developer portfolio profiles establish fast initial authority for a new subdomain.
+- Targeted community announcements (Product Hunt, Show HN, student discussion forums, AI tool directories) without artificial backlink schemes.
+- Tutorial video covering "How to get a Google Gemini API Key" linking back in description.
+- Keep the public repository README and documentation synchronized with production.
 
-## Possibili sviluppi
+## Future Improvements
 
-In ordine di impatto:
+Prioritized by organic impact:
 
-1. Traduzione in EN e FR delle guide su appunti, quiz e mappe: testo in `seo/content.ts` e lingua in `PAGE_LANGS` (`config/seoRoutes.ts`).
-2. Nuove guide: riassumere un PDF con l'AI, trascrivere una lezione registrata, convertire in testo la foto di una pagina, errori Gemini (429 e quota) e relative soluzioni, preparare un esame con quiz e mappe.
-3. Screenshot reali con `alt` nelle guide e immagine social localizzata (`og-image.png` è attualmente in inglese).
-4. Dopo 4–6 settimane, analisi di query e CTR in Search Console e rifinitura di titoli e description delle pagine con molte impressioni e pochi clic.
+1. Translate note-taking, quiz, and concept map guides to English and French: configure content in `seo/content.ts` and declare language codes in `PAGE_LANGS` (`config/seoRoutes.ts`).
+2. Publish additional student-centric guides: summarizing long PDFs with AI, lecture transcription workflows, OCR text extraction from textbook photos, troubleshooting Gemini rate limits (HTTP 429 and quotas), and exam preparation strategies.
+3. Add illustrated step-by-step screenshots with descriptive `alt` tags and localized social preview images (`og-image.png` is currently English).
+4. After 4–6 weeks, review query impressions and CTR within Google Search Console to refine meta titles and descriptions for high-impression, low-CTR queries.
 
-## Limiti noti
+## Known Limitations
 
-- **Lingua della home.** Googlebot scansiona senza lingua preferita, quindi `/` viene indicizzata in inglese. Le ricerche in italiano e francese sono servite da `/it/` e `/fr/`; il benvenuto non le sostituisce.
-- **404 HTTP reale non implementato.** Gli URL sconosciuti restano 200 con `noindex` (impostato dall'app). Un vero 404 richiederebbe un `404.html` più rewrite per ogni rotta dell'app, con il rischio di rompere i link diretti.
-- **Dati strutturati.** Google ha limitato i risultati arricchiti per le FAQ e rimosso quelli per HowTo: qui servono alla chiarezza semantica, non a ottenere snippet più ampi.
+- **Root URL language indexing.** Googlebot crawls without language preference headers, resulting in `/` being indexed in English. Italian and French organic searches are targeted by `/it/` and `/fr/`; the onboarding screen does not replace localized landing pages.
+- **Simulated 404 responses.** Unknown SPA client URLs return HTTP 200 with `noindex` handled in React. Returning a native HTTP 404 would require a custom `404.html` paired with rewrite rules for every valid client route, risking broken deep links.
+- **Rich snippet availability.** Google has deprecated HowTo rich results and restricted FAQ rich snippets to select authority domains; structured data here serves semantic clarity rather than guaranteed visual enhancements in SERPs.
