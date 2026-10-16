@@ -1,0 +1,75 @@
+{
+  "name": "studia",
+  "private": true,
+  "version": "1.3.1",
+  "description": "StudIA - appunti intelligenti con Google Gemini (bring your own API key)",
+  "author": {
+    "name": "Nicola Rizzo",
+    "url": "https://github.com/rizzonicola"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://studia.poppi.cc",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "typecheck:strict": "tsc -p tsconfig.strict.json",
+    "test": "vitest run",
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "check:imports": "node tools/import-graph.mjs",
+    "check:seo": "node tools/seo-check.mjs",
+    "check:pwa": "node tools/pwa-check.mjs",
+    "check:manifests": "node tools/generate-manifests.mjs --check",
+    "check:sw": "node tools/browser-checks/sw-check.mjs",
+    "check:sw-manifest": "node tools/sw-manifest-check.mjs",
+    "check:select": "node tools/browser-checks/select-check.mjs",
+    "check:status": "node tools/browser-checks/status-indicator-check.mjs",
+    "check:theme-color": "node tools/browser-checks/theme-color-check.mjs",
+    "check:idb": "node tools/browser-checks/idb-check.mjs",
+    "check:sanitize": "node tools/browser-checks/sanitize-check.mjs",
+    "check:ai-task": "node tools/browser-checks/ai-task-check.mjs",
+    "check:react": "node tools/browser-checks/react-hooks-check.mjs",
+    "icons": "node tools/generate-icons.mjs",
+    "manifests": "node tools/generate-manifests.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@google/genai": "^1.30.0",
+    "idb": "^8.0.3",
+    "jszip": "^3.10.1",
+    "katex": "^0.16.47",
+    "lucide-react": "^0.545.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-graph-vis": "^1.0.7",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.9.4",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "~5.9.0",
+    "vite": "^7.0.0",
+    "vitest": "^4.1.0"
+  },
+  "allowScripts": {
+    "@google/genai@1.52.0": true,
+    "esbuild@0.28.2": true,
+    "protobufjs@7.6.6": true
+  }
+}

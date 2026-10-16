@@ -1,0 +1,55 @@
+{
+  // Controllo STRICT (strict: true) sui moduli senza dipendenze grafiche: logica, utilità, configurazione, i18n.
+  // Si estende file per file: quando un file passa `npm run typecheck:strict`, aggiungilo qui. L'obiettivo è portare
+  // strict: true in tsconfig.json; restano da sistemare (stima) pages/, components/, hooks/ e utils/markdownMath.tsx.
+  // Esclusi per ora perché dipendono dai tipi di librerie esterne non verificabili senza `npm install`:
+  //   services/gemini.ts (@google/genai), services/notesDb.ts (idb), utils/exportUtils.ts (jszip).
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "strict": true },
+  "include": [],
+  "files": [
+    "vite-env.d.ts",
+    "types.ts",
+    "config/appConfig.ts",
+    "config/legacyFonts.ts",
+    "config/seoRoutes.ts",
+    "config/site.ts",
+    "seo/content.ts",
+    "seo/generate.ts",
+    "seo/render.ts",
+    "config/themes.ts",
+    "config/thirdPartyNotices.ts",
+    "i18n/core.ts",
+    "i18n/resolve.ts",
+    "i18n/types.ts",
+    "i18n/locales/en.ts",
+    "i18n/locales/fr.ts",
+    "i18n/locales/it.ts",
+    "services/apiKey.ts",
+    "services/apiKeyStore.ts",
+    "services/errors.ts",
+    "services/fallbackPreference.ts",
+    "services/notesData.ts",
+    "services/prompts.ts",
+    "services/prompts/en.ts",
+    "services/prompts/fr.ts",
+    "services/prompts/it.ts",
+    "services/rateLimit.ts",
+    "services/uploadCache.ts",
+    "services/validators.ts",
+    "utils/color.ts",
+    "utils/dialogs.ts",
+    "utils/download.ts",
+    "utils/fileTypes.ts",
+    "utils/helpers.ts",
+    "utils/imageUtils.ts",
+    "utils/importFiles.ts",
+    "utils/manifestVariants.ts",
+    "utils/moduleRegistry.ts",
+    "utils/normalizeMath.ts",
+    "utils/safeStorage.ts",
+    "utils/sanitizeHtml.ts",
+    "utils/storageStatus.ts",
+    "utils/themeEngine.ts"
+  ]
+}

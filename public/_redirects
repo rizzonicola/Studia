@@ -1,0 +1,5 @@
+# Le pagine statiche /it/, /en/, /fr/ (e le guide) sono file reali generati al build (seo/generate.ts): hanno la precedenza sul fallback.
+# Su Cloudflare Pages questa regola e' comunque ridondante (senza 404.html Pages applica gia' il fallback SPA) e in build puo' comparire
+# l'avviso "Infinite loop detected": e' innocuo. Se dopo il deploy /it/ mostrasse l'app invece della pagina statica, elimina questo file.
+# Fallback SPA: qualunque percorso non-file serve index.html (così /privacy, /terms, /note/... funzionano se aperti direttamente).
+/*    /index.html   200

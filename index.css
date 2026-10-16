@@ -1,0 +1,231 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Le cartelle ricavano fill-* da bg-* con .replace(): Tailwind non le vede nel sorgente, quindi l'SVG restava nero. */
+@source inline("fill-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100,300}");
+/* Variante "soft" delle card in modalità elenco (note.color + "/40"). */
+@source inline("bg-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-100/40");
+
+/*
+ * Token del tema (vedi utils/themeEngine.ts): i valori qui sono quelli del tema chiaro "Classico";
+ * a runtime il motore dei temi li sostituisce impostando le stesse variabili su <html>.
+ * "static" = vengono sempre emessi, anche se nessuna utilità li usa direttamente.
+ *   bg-surface / text-fg            → schede e testo principale
+ *   bg-accent, text-accent-fg, ...  → colore principale dell'app (pulsanti, evidenziazioni, link)
+ *   bg-danger                       → azioni distruttive
+ */
+@theme static {
+  --color-surface: #ffffff;
+  --color-fg: #111827;
+  --color-accent: #111827;
+  --color-accent-hover: #000000;
+  --color-accent-fg: #ffffff;
+  --color-accent-ink: #111827;
+  --color-accent-soft: #f3f4f6;
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
+
+  /* Angoli: i valori predefiniti di Tailwind moltiplicati per --ui-radius (Impostazioni → Forma e layout) */
+  --radius-xs: calc(0.125rem * var(--ui-radius, 1));
+  --radius-sm: calc(0.25rem * var(--ui-radius, 1));
+  --radius-md: calc(0.375rem * var(--ui-radius, 1));
+  --radius-lg: calc(0.5rem * var(--ui-radius, 1));
+  --radius-xl: calc(0.75rem * var(--ui-radius, 1));
+  --radius-2xl: calc(1rem * var(--ui-radius, 1));
+  --radius-3xl: calc(1.5rem * var(--ui-radius, 1));
+  --radius-4xl: calc(2rem * var(--ui-radius, 1));
+}
+
+@theme {
+  --animate-fade-in: fade-in 0.4s ease-out both;
+  --animate-fade-in-up: fade-in-up 0.3s ease-out both;
+  --animate-dialog-in: dialog-in 0.2s ease-out both;
+  --animate-dialog-fade: dialog-fade 0.2s ease-out both;
+  --animate-drop-in: drop-in 0.12s ease-out both;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* Dialoghi (components/DialogHost.tsx): il riquadro sale e si ingrandisce appena, lo sfondo sfuma */
+  @keyframes dialog-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes dialog-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  /* Linea di inserimento del trascinamento (components/DropIndicator.tsx): compare con una breve dissolvenza invece di "scattare" */
+  @keyframes drop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+/* Compatibilità con i default di Tailwind v3 usati dalla UI esistente */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    /* iOS: in orizzontale il testo non si ingrandisce da solo (lo zoom dell'utente resta libero) */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    font-family: var(--ui-font, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+    font-size: var(--ui-font-size, 100%);
+    /* Lo sfondo dell'area oltre la pagina (overscroll, barre del browser) segue il tema */
+    background-color: var(--color-gray-50, #f9fafb);
+    color: var(--color-gray-900, #111827);
+  }
+  body {
+    letter-spacing: var(--ui-letter, 0em);
+  }
+  /* App installata (finestra propria, senza barra del browser): il gesto «tira per aggiornare» ricaricherebbe la pagina e farebbe
+     perdere un testo non salvato; qui è disattivato. L'effetto di fine scorrimento e lo scorrimento dentro i pannelli restano. */
+  @media (display-mode: standalone), (display-mode: minimal-ui), (display-mode: window-controls-overlay) {
+    html {
+      overscroll-behavior-y: contain;
+    }
+  }
+  /* Controlli nativi (barre di scorrimento, menu a tendina, selettori data/colore) in tinta con il tema */
+  html[data-tone="dark"] { color-scheme: dark; }
+  html[data-tone="light"] { color-scheme: light; }
+  input:not([type="color"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  textarea,
+  select {
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+  }
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  progress {
+    accent-color: var(--color-accent);
+  }
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-accent-ink) 30%, transparent);
+  }
+}
+
+/* Formule matematiche (KaTeX): le equazioni in blocco troppo larghe scorrono in orizzontale */
+.katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.25em 0; }
+.prose .katex { font-size: 1.05em; }
+
+/* Pulsanti della pagina Fotocamera (prima erano in un <style> inline: ora la CSP resta più semplice) */
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: all 0.2s ease-in-out;
+}
+.btn-primary {
+  background-color: var(--color-accent);
+  color: var(--color-accent-fg);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.btn-primary:hover { background-color: var(--color-accent-hover); transform: translateY(-2px); }
+.btn-secondary { background-color: var(--color-gray-200, #e5e7eb); color: var(--color-gray-800, #1f2937); }
+.btn-secondary:hover { background-color: var(--color-gray-300, #d1d5db); }
+
+/* Focus sempre visibile con la tastiera (WCAG 2.4.7) */
+:focus-visible {
+  outline: 2px solid var(--color-fg, #111827);
+  outline-offset: 2px;
+}
+input:focus-visible, textarea:focus-visible, select:focus-visible { outline-offset: 0; }
+
+/* Font: solo quelli già presenti sul dispositivo (nessun font esterno, vedi config/themes.ts → FONT_STACKS) */
+
+/* Animazioni: seguono la preferenza del dispositivo ("riduci animazioni"), salvo scelta diversa nelle Impostazioni */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion="full"]) *,
+  html:not([data-motion="full"]) ::before,
+  html:not([data-motion="full"]) ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] ::before,
+html[data-motion="reduce"] ::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Motivi dello sfondo (Impostazioni → Forma e layout) */
+html[data-pattern="dots"] .app-shell {
+  background-image: radial-gradient(color-mix(in srgb, var(--color-gray-900) 18%, transparent) 1px, transparent 1.6px);
+  background-size: 20px 20px;
+}
+html[data-pattern="grid"] .app-shell {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-gray-900) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-gray-900) 8%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+html[data-pattern="lines"] .app-shell {
+  background-image: repeating-linear-gradient(0deg, transparent 0, transparent 27px, color-mix(in srgb, var(--color-gray-900) 9%, transparent) 27px, color-mix(in srgb, var(--color-gray-900) 9%, transparent) 28px);
+}
+
+/*
+ * Testo degli appunti (classe "prose" del plugin typography). I colori sono ricollegati alla scala dei grigi del tema
+ * (identici ai valori originali del plugin nel tema chiaro "Classico"), così seguono automaticamente il tema scuro.
+ */
+.prose {
+  --tw-prose-body: var(--color-gray-700);
+  --tw-prose-headings: var(--color-gray-900);
+  --tw-prose-lead: var(--color-gray-600);
+  --tw-prose-links: var(--color-accent-ink);
+  --tw-prose-bold: var(--color-gray-900);
+  --tw-prose-counters: var(--color-gray-500);
+  --tw-prose-bullets: var(--color-gray-300);
+  --tw-prose-hr: var(--color-gray-200);
+  --tw-prose-quotes: var(--color-gray-900);
+  --tw-prose-quote-borders: var(--color-gray-200);
+  --tw-prose-captions: var(--color-gray-500);
+  --tw-prose-kbd: var(--color-gray-900);
+  --tw-prose-code: var(--color-gray-900);
+  --tw-prose-pre-code: var(--color-gray-200);
+  --tw-prose-pre-bg: var(--color-gray-800);
+  --tw-prose-th-borders: var(--color-gray-300);
+  --tw-prose-td-borders: var(--color-gray-200);
+}
+html[data-tone="dark"] .prose {
+  --tw-prose-pre-code: var(--color-gray-800);
+  --tw-prose-pre-bg: color-mix(in srgb, var(--color-gray-50) 60%, black);
+}
+/* Carattere, interlinea e larghezza delle note (Impostazioni → Testo e lettura) */
+.prose.reader {
+  font-family: var(--reader-font, inherit);
+  max-width: var(--reader-width, none);
+  margin-inline: auto;
+}
+.prose.reader :is(p, li, dd, blockquote) {
+  line-height: var(--reader-lh, 1.75);
+}
+
+/* Testo visibile solo agli screen reader */
+.sr-only-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

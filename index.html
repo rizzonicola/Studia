@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Icone: ICO per browser vecchi e crawler (sizes="32x32" evita che Chrome lo preferisca all'SVG), SVG che segue il tema scuro, PNG 192 (multiplo di 48 px, come chiede Google) -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <!-- Niente maximum-scale / user-scalable=no: lo zoom deve restare possibile (accessibilità) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!--
+      Colore della barra di stato (in alto; sul desktop, della barra del titolo). Qui ci sono i due valori del tema predefinito, scelti dal
+      tema del dispositivo: servono solo al primo disegno. Appena il tema è noto (public/theme-init.js, poi utils/themeEngine.ts) le due
+      meta diventano UNA sola, senza media query, che segue il tema scelto nell'app e si aggiorna a ogni cambio.
+      La barra di NAVIGAZIONE di Android (in basso) invece la colora il browser con il theme_color del manifest, letto quando installa o
+      aggiorna l'app: per questo lo stesso script cambia anche l'href del manifest (public/manifests/<colore>.json), vedi docs/PWA.md.
+    -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#282c35" />
+    <!-- Il tema (chiaro/scuro/personalizzato) viene applicato prima del primo render: file esterno per la CSP (script-src 'self') -->
+    <meta name="color-scheme" content="light dark" />
+    <script src="/theme-init.js"></script>
+    <title>StudIA – AI notes, quizzes and concept maps</title>
+    <meta name="description" content="StudIA: notes, quizzes and concept maps created with Google Gemini. No account needed: you use your own personal API key." />
+    <!-- Nessun canonical qui: la shell serve a tutte le rotte; lo imposta components/DocumentMeta.tsx (vedi docs/SEO.md) -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="author" content="__AUTHOR_NAME__" />
+    <link rel="author" href="__AUTHOR_URL__" />
+    <link rel="license" href="__LICENSE_URL__" />
+
+    <!-- Open Graph / Twitter: i testi statici sono in inglese (lingua di ripiego); il titolo e la descrizione cambiano con la lingua dell'app -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="StudIA" />
+    <meta property="og:title" content="StudIA – AI notes, quizzes and concept maps" />
+    <meta property="og:description" content="Notes, quizzes and concept maps created with Google Gemini. No account needed: bring your own API key." />
+    <meta property="og:url" content="__SITE_URL__/" />
+    <meta property="og:image" content="__SITE_URL__/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="StudIA" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="it_IT" />
+    <meta property="og:locale:alternate" content="fr_FR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="StudIA – AI notes, quizzes and concept maps" />
+    <meta name="twitter:description" content="Notes, quizzes and concept maps created with Google Gemini. No account needed: bring your own API key." />
+    <meta name="twitter:image" content="__SITE_URL__/og-image.png" />
+
+    <!-- Dati strutturati: stesse entita (@id) delle pagine statiche /it/, /en/, /fr/ (seo/render.ts). Un blocco ld+json non e codice eseguibile: la CSP non lo tocca. -->
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@graph":[
+        {"@type":"Organization","@id":"__SITE_URL__/#org","name":"StudIA","url":"__SITE_URL__/","logo":{"@type":"ImageObject","url":"__SITE_URL__/icons/icon-512.png","width":512,"height":512}},
+        {"@type":"Person","@id":"__SITE_URL__/#author","name":"__AUTHOR_NAME__","url":"__AUTHOR_URL__","sameAs":["__AUTHOR_URL__"]},
+        {"@type":"WebSite","@id":"__SITE_URL__/#website","url":"__SITE_URL__/","name":"StudIA","alternateName":["Studia AI"],"inLanguage":["it","en","fr"],"publisher":{"@id":"__SITE_URL__/#org"}},
+        {"@type":"WebApplication","@id":"__SITE_URL__/#app","name":"StudIA","url":"__SITE_URL__/","description":"Notes, quizzes and concept maps created with Google Gemini. No account needed: bring your own API key.","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":["it","en","fr"],"isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@id":"__SITE_URL__/#author"},"license":"__LICENSE_URL__","publisher":{"@id":"__SITE_URL__/#org"}}
+      ]}
+    </script>
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="StudIA" />
+    <meta name="application-name" content="StudIA" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <h1>StudIA – AI notes, quizzes and concept maps</h1>
+      <p>StudIA needs JavaScript to run the app. It turns PDFs, photos and recordings into notes, quizzes and concept maps with Google Gemini: no account, you use your own API key. Read about it without JavaScript:</p>
+      <ul>
+        <li><a href="/it/">Italiano – Appunti, quiz e mappe concettuali con l'AI</a></li>
+        <li><a href="/en/">English – AI notes, quizzes and concept maps</a></li>
+        <li><a href="/fr/">Français – Notes, quiz et cartes conceptuelles avec l'IA</a></li>
+      </ul>
+    </noscript>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
